@@ -6,10 +6,10 @@ import h5py
 import numpy as np
 
 ns = 0
-ne = 2
-n_procs = 1 # number of processors that did the cholla calculation
-dnamein = '../out/test/raw/'
-dnameout = '../out/test/'
+ne = 0
+n_procs = 16 # number of processors that did the cholla calculation
+dnamein = './hdf5/raw/'
+dnameout = './hdf5/'
 
 units_attr = {}
 
