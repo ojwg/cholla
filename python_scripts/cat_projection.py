@@ -6,10 +6,12 @@ import h5py
 import numpy as np
 
 ns = 0
-ne = 0
-n_procs = 16 # number of processors that did the cholla calculation
-dnamein = './hdf5/raw/'
-dnameout = './hdf5/'
+ne = 2
+n_procs = 1 # number of processors that did the cholla calculation
+dnamein = '../out/test/raw/'
+dnameout = '../out/test/'
+
+units_attr = {}
 
 # loop over the output times
 for n in range(ns, ne+1):
@@ -37,6 +39,10 @@ for n in range(ns, ne+1):
       fileout.attrs['dt'] = [head['dt'][0]]
       fileout.attrs['n_step'] = [head['n_step'][0]]
 
+      # keep track of the 'units' attribute.  We'll have to add 
+      # these to the datasets which haven't yet been created.
+      units_attr = {name: filein[name].attrs['units'] for name in filein}
+
       dxy = np.zeros((nx,ny))
       dxz = np.zeros((nx,nz))
       Txy = np.zeros((nx,ny))
@@ -63,5 +69,8 @@ for n in range(ns, ne+1):
   fileout.create_dataset('d_xz', data=dxz)
   fileout.create_dataset('T_xy', data=Txy)
   fileout.create_dataset('T_xz', data=Txz)
+
+  for name in fileout:
+    fileout[name].attrs['units'] = units_attr[name]
 
   fileout.close()

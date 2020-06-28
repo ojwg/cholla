@@ -191,6 +191,25 @@ void OutputData(Grid3D &G, struct parameters P, int nfile)
   }
 }
 
+#ifdef HDF5
+/* Helper function to create a string attribute */
+void createStringAttribute(hid_t &data_id, char const *name, char const *value) {
+  hid_t attr_dataspace_id = H5Screate(H5S_SCALAR);
+  hid_t attr_type = H5Tcopy(H5T_C_S1);
+  H5Tset_size(attr_type, strlen(value));
+  H5Tset_strpad(attr_type, H5T_STR_NULLTERM);
+  hid_t attr_id = H5Acreate2(data_id, name, attr_type, attr_dataspace_id, H5P_DEFAULT,
+      H5P_DEFAULT);
+  // ignore the return success value since we won't be doing anything with it.
+  H5Awrite(attr_id, attr_type, value);
+
+  // now close everything that was opened.
+  H5Sclose(attr_dataspace_id);
+  H5Tclose(attr_type);
+  H5Aclose(attr_id);
+}
+#endif /* HDF5 */
+
 
 /* Output a projection of the grid data to file. */
 void OutputProjectedData(Grid3D &G, struct parameters P, int nfile)
@@ -1512,6 +1531,8 @@ void Grid3D::Write_Projection_HDF5(hid_t file_id)
     dataset_id = H5Dcreate(file_id, "/d_xy", H5T_IEEE_F64BE, dataspace_xy_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
     // Write the projected density array to file  // NOTE: NEED TO FIX FOR FLOAT REAL!!!
     status = H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dataset_buffer_dxy); 
+    // Write out the units attribute
+    createStringAttribute(dataset_id, "units", "solar mass per kpc squared");
     // Free the dataset id
     status = H5Dclose(dataset_id);
 
@@ -1519,6 +1540,8 @@ void Grid3D::Write_Projection_HDF5(hid_t file_id)
     dataset_id = H5Dcreate(file_id, "/d_xz", H5T_IEEE_F64BE, dataspace_xz_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
     // Write the projected density array to file  // NOTE: NEED TO FIX FOR FLOAT REAL!!!
     status = H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dataset_buffer_dxz); 
+    // Write out the units attribute
+    createStringAttribute(dataset_id, "units", "solar mass per kpc squared");
     // Free the dataset id
     status = H5Dclose(dataset_id);
 
@@ -1526,13 +1549,17 @@ void Grid3D::Write_Projection_HDF5(hid_t file_id)
     dataset_id = H5Dcreate(file_id, "/T_xy", H5T_IEEE_F64BE, dataspace_xy_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
     // Write the projected temperature array to file  // NOTE: NEED TO FIX FOR FLOAT REAL!!!
     status = H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dataset_buffer_Txy); 
+    // Write out the units attribute
+    createStringAttribute(dataset_id, "units", "kelvin times solar mass per kpc squared");
     // Free the dataset id
     status = H5Dclose(dataset_id);
 
-    // Create a dataset id for projected xz density
+    // Create a dataset id for projected xz temperature
     dataset_id = H5Dcreate(file_id, "/T_xz", H5T_IEEE_F64BE, dataspace_xz_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
     // Write the projected temperature array to file  // NOTE: NEED TO FIX FOR FLOAT REAL!!!
     status = H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dataset_buffer_Txz); 
+    // Write out the units attribute
+    createStringAttribute(dataset_id, "units", "kelvin times solar mass per kpc squared");
     // Free the dataset id
     status = H5Dclose(dataset_id);    
 
