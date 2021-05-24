@@ -668,6 +668,7 @@ void Grid3D::Add_Analytic_Galaxy_Potential(int g_start, int g_end, DiskGalaxy& g
         R = sqrt(x_pos*x_pos + y_pos*y_pos);
         //Grav.F.potential_h[id] += non_mod_frac*gal.phi_disk_D3D(R, z_pos) + gal.phi_halo_D3D(R, z_pos); 
         Grav.F.potential_h[id] += gal.phi_halo_D3D(R, z_pos); 
+        //if (R > 2.0) Grav.F.potential_h[id] += gal.phi_disk_D3D(R, z_pos);
       }
     }
   }

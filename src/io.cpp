@@ -99,23 +99,23 @@ void WriteData(Grid3D &G, struct parameters P, int nfile)
   
   #ifndef ONLY_PARTICLES
   /*call the data output routine for Hydro data*/
-  if (nfile % P.outstep_hydro == 0) OutputData(G,P,nfile);
+  if ((nfile/(int)P.outstep)  % P.outstep_hydro == 0) OutputData(G,P,nfile);
   #endif
   
   #ifdef PROJECTION
-  if (nfile % P.outstep_projection == 0) OutputProjectedData(G,P,nfile);
+  if ((nfile/(int)P.outstep)  % P.outstep_projection == 0) OutputProjectedData(G,P,nfile);
   #endif /*PROJECTION*/
 
   #ifdef ROTATED_PROJECTION
-  if (nfile % P.outstep_rotated_projection == 0) OutputRotatedProjectedData(G,P,nfile);
+  if ((nfile/(int)P.outstep)  % P.outstep_rotated_projection == 0) OutputRotatedProjectedData(G,P,nfile);
   #endif /*ROTATED_PROJECTION*/
 
   #ifdef SLICES
-  if (nfile % P.outstep_slice == 0) OutputSlices(G,P,nfile);
+  if ((nfile/(int)P.outstep)  % P.outstep_slice == 0) OutputSlices(G,P,nfile);
   #endif /*SLICES*/
   
   #ifdef PARTICLES
-  if (nfile % P.outstep_particle == 0) G.WriteData_Particles( P, nfile );
+  if ((nfile/(int)P.outstep)  % P.outstep_particle == 0) G.WriteData_Particles( P, nfile );
   #endif
   
   #ifdef COSMOLOGY

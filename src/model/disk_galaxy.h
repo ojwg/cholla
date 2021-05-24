@@ -131,16 +131,21 @@ public:
     };    
 
 
-    Real getM_d() { return M_d; };
-    Real getR_d() { return R_d; };
-    Real getZ_d() { return Z_d; };
+    Real getM_d()    { return M_d;    };
+    Real getR_d()    { return R_d;    };
+    Real getZ_d()    { return Z_d;    };
+    Real getM_vir()  { return M_vir;  };
+    Real getR_vir()  { return R_vir;  };
+    Real getC_vir()  { return c_vir;  };
+    Real getR_cool() { return r_cool; };
 
 };
 
 namespace Galaxies {
     // all masses in M_sun and all distances in kpc
-    //static DiskGalaxy MW(6.5e10, 3.5, (3.5/5.0), 1.0e12, 261, 20, 157.0);
-    static DiskGalaxy MW(6.5e10, 2.7, 0.7, 1.077e12, 261, 18, 157.0);
+    //static DiskGalaxy MW(6.5e10, 3.5, (3.5/5.0), 1.0e12, 261, 20, 157.0);  ORIG
+    //static DiskGalaxy MW(6.5e10, 2.7, 0.7, 1.077e12, 261, 18, 157.0);  WHAT I THOUGHT WAS GOOD (for a while)
+    static DiskGalaxy MW(3.8e10, 2.7, 0.135, 0.912e12, 159, 15, 157.0); // from thin disk
     static DiskGalaxy M82(1.0e10, 0.8, 0.15, 5.0e10, 0.8/0.015, 10, 100.0);
 };
 

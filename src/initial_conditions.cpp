@@ -956,7 +956,6 @@ void Grid3D::Noh_3D()
 }
 
 
-
 /*! \fn void Disk_2D()
  *  \brief Initialize the grid with a 2D disk following a Kuzmin profile. */
 void Grid3D::Disk_2D()
@@ -966,13 +965,13 @@ void Grid3D::Disk_2D()
   Real d, n, a, a_d, a_h, v, vx, vy, P, T_d, x;
   Real M_vir, M_h, M_d, c_vir, R_vir, R_h, R_d, Sigma;
 
-  M_vir = 1.0e12; // viral mass of MW in M_sun
-  M_d = 6.5e10; // mass of disk in M_sun
+  M_vir = Galaxies::MW.getM_vir(); // viral mass of in M_sun
+  M_d = Galaxies::MW.getM_d(); // viral mass of in M_sun
+  R_d = Galaxies::MW.getR_d(); // disk scale length in kpc
+  R_vir = Galaxies::MW.getR_vir(); // virial radius in kpc
+  c_vir = Galaxies::MW.getC_vir(); // halo concentration
   M_h = M_vir - M_d; // halo mass in M_sun
-  R_vir = 261; // viral radius in kpc
-  c_vir = 20; // halo concentration
   R_h = R_vir / c_vir; // halo scale length in kpc
-  R_d = 3.5; // disk scale length in kpc
   T_d = 10000; // disk temperature, 10^4K
 
 
