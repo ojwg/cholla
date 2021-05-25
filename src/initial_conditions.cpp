@@ -55,8 +55,14 @@ void Grid3D::Set_Initial_Conditions(parameters P) {
     Noh_3D();    
   } else if (strcmp(P.init, "Disk_2D")==0) {
     Disk_2D();    
-  } else if (strcmp(P.init, "Disk_3D")==0 || strcmp(P.init, "Disk_3D_particles")==0) {
+  } else if (strcmp(P.init, "Disk_3D")==0) {
     Disk_3D(P); 
+  } else if (strcmp(P.init, "Disk_3D_particles")==0) {
+    #ifndef ONLY_PARTICLES
+    Disk_3D(P);
+    #else
+    Uniform_Grid();
+    #endif
   } else if (strcmp(P.init, "Spherical_Overpressure_3D")==0) {
     Spherical_Overpressure_3D();    
   } else if (strcmp(P.init, "Spherical_Overdensity_3D")==0) {
