@@ -79,11 +79,6 @@ void WriteData(Grid3D &G, struct parameters P, int nfile)
   cudaMemcpy(G.C.density, G.C.device, G.H.n_fields*G.H.n_cells*sizeof(Real), cudaMemcpyDeviceToHost);
 
   chprintf( "\nSaving Snapshot: %d \n", nfile );
-  
-  #ifdef HDF5
-  // Initialize HDF5 interface
-  H5open();
-  #endif
 
   #ifdef HDF5
   // Initialize HDF5 interface
