@@ -112,6 +112,8 @@ __global__ void cooling_kernel(Real *dev_conserved, int nx, int ny, int nz, int 
     // call the cooling function
     #ifdef CLOUDY_COOL
     cool = Cloudy_cool(n, T, coolTexObj, heatTexObj);
+    #elif TI_COOL
+    cool = TI_cool(n, T);
     #else
     cool = CIE_cool(n, T);
     #endif
@@ -130,6 +132,8 @@ __global__ void cooling_kernel(Real *dev_conserved, int nx, int ny, int nz, int 
       // calculate cooling again
       #ifdef CLOUDY_COOL
       cool = Cloudy_cool(n, T, coolTexObj, heatTexObj);
+      #elif TI_COOL
+      cool = TI_cool(n, T);
       #else
       cool = CIE_cool(n, T);
       #endif
@@ -149,6 +153,8 @@ __global__ void cooling_kernel(Real *dev_conserved, int nx, int ny, int nz, int 
     // calculate cooling rate for new T
     #ifdef CLOUDY_COOL
     cool = Cloudy_cool(n, T, coolTexObj, heatTexObj);
+    #elif TI_COOL
+    cool = TI_cool(n, T);
     #else
     cool = CIE_cool(n, T);
     //printf("%d %d %d %e %e %e\n", xid, yid, zid, n, T, cool);
@@ -362,6 +368,44 @@ __device__ Real Cloudy_cool(Real n, Real T, cudaTextureObject_t coolTexObj, cuda
 #endif //CLOUDY_COOL
 
 
+#ifdef TI_COOL
+/* \fn __device__ Real TI_cool(Real n, Real T)
+ * \brief Estimated cooling / photoelectric heating function
+          based on description given in Kim et al. 2015. */
+__device__ Real TI_cool(Real n, Real T)
+{
+  Real lambda = 0.0; //cooling rate, erg s^-1 cm^3
+  Real  H = 0.0; //heating rate, erg s^-1
+  Real cool = 0.0; //cooling per unit volume, erg /s / cm^3
+  Real n_av = 100.0; //mean density in the sim volume
+
+  // Below 10K only include photoelectric heating
+  if (log10(T) < 1.0) {
+    H = n_av*1.0e-26;
+  }
+  // Koyama & Inutsaka 2002 analytic fit
+  if (log10(T) >= 1.0 && log10(T) < 4.0) {
+    lambda = 2e-26 * (1e7 * exp(-1.148e5 / (T+1000.0)) + 1.4e-2 * sqrt(T) * exp(-92.0/T));
+    H = n_av*1.0e-26;
+  }
+  // fit to cloudy CIE cooling function 
+  if (log10(T) >= 4.0 && log10(T) < 5.9) {
+    lambda = powf(10.0, (-1.3 * (log10(T) - 5.25) * (log10(T) - 5.25) - 21.25));
+  }
+  if (log10(T) >= 5.9 && log10(T) < 7.4) {
+    lambda = powf(10.0, (0.7 * (log10(T) - 7.1) * (log10(T) - 7.1) - 22.8));
+  }
+  if (log10(T) >= 7.4)  {
+    lambda = powf(10.0, (0.45*log10(T) - 26.065));
+  }
+ 
+  // cooling rate per unit volume
+  cool = n*(n*lambda - H);
+  //if (cool > 1.0e-20) printf("n: %e  T: %e  lambda: %e  H: %e\n", n, T, lambda, H);
+
+  return cool;
+}
+#endif //TI_COOL
 
 
 #endif //COOLING_GPU
