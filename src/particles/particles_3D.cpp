@@ -198,6 +198,8 @@ void Particles_3D::Initialize(struct parameters *P, Grav3D &Grav, Real xbound, R
   // Initialize Particles
   if (strcmp(P->init, "Spherical_Overdensity_3D") == 0) {
     Initialize_Sphere(P);
+  } else if (strcmp(P->init, "Spherical_Overdensity_Star_Formation") == 0) {
+    Initialize_No_Particles(P);
   } else if (strcmp(P->init, "Zeldovich_Pancake") == 0) {
     Initialize_Zeldovich_Pancake(P);
   } else if (strcmp(P->init, "Read_Grid") == 0) {
@@ -634,7 +636,29 @@ void Particles_3D::Initialize_Sphere(struct parameters *P)
   chprintf(" Particles Uniform Sphere Initialized, n_local: %lu\n", n_local);
 }
 
-  #if defined(PARTICLE_AGE) && !defined(SINGLE_PARTICLE_MASS) && defined(PARTICLE_IDS)
+
+void Particles_3D::Initialize_No_Particles(struct parameters *P) {
+
+  n_local = 0;
+
+  particles_array_size = Compute_Particles_GPU_Array_Size(n_local);
+  Allocate_Particles_GPU_Array_Real(&pos_x_dev, particles_array_size);
+  Allocate_Particles_GPU_Array_Real(&pos_y_dev, particles_array_size);
+  Allocate_Particles_GPU_Array_Real(&pos_z_dev, particles_array_size);
+  Allocate_Particles_GPU_Array_Real(&vel_x_dev, particles_array_size);
+  Allocate_Particles_GPU_Array_Real(&vel_y_dev, particles_array_size);
+  Allocate_Particles_GPU_Array_Real(&vel_z_dev, particles_array_size);
+  Allocate_Particles_GPU_Array_Real(&grav_x_dev, particles_array_size);
+  Allocate_Particles_GPU_Array_Real(&grav_y_dev, particles_array_size);
+  Allocate_Particles_GPU_Array_Real(&grav_z_dev, particles_array_size);
+  Allocate_Particles_GPU_Array_Real(&mass_dev, particles_array_size);
+  Allocate_Particles_GPU_Array_Part_Int(&partIDs_dev, particles_array_size);
+  Allocate_Particles_GPU_Array_Real(&age_dev, particles_array_size);
+
+}
+
+
+#if defined(PARTICLE_AGE) && !defined(SINGLE_PARTICLE_MASS) && defined(PARTICLE_IDS)
 /**
  *   Initializes a disk population of uniform mass stellar clusters
  */

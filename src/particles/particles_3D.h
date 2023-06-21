@@ -291,6 +291,8 @@ class Particles_3D
   void Print_Max_Memory_Usage();
       #endif
 
+  void Initialize_No_Particles(struct parameters *P);
+
     #endif  // PARTICLES_GPU
 
   void Allocate_Memory();

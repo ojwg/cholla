@@ -22,8 +22,8 @@
   #endif
 #endif  // SUPERNOVA
 #ifdef STAR_FORMATION
-  #include "particles/star_formation.h"
-#endif
+  #include "particles/new_particles.h"
+#endif // STAR_FORMATION
 #ifdef MHD
   #include "mhd/magnetic_divergence.h"
 #endif  // MHD
@@ -169,7 +169,7 @@ int main(int argc, char *argv[])
 #endif    // SUPERNOVA && PARTICLE_AGE
 
 #ifdef STAR_FORMATION
-  star_formation::Initialize(G);
+  new_star_particles::Initialize(G);
 #endif
 
 #ifdef GRAVITY_ANALYTIC_COMP
@@ -293,7 +293,7 @@ int main(int argc, char *argv[])
 #endif
 
 #ifdef STAR_FORMATION
-    star_formation::Star_Formation(G);
+    new_star_particles::FormStarParticles(G);
 #endif
 
 #ifdef CPU_TIME

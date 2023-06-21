@@ -678,10 +678,15 @@ class Grid3D
    * overpressue. */
   void Spherical_Overpressure_3D();
 
-  /*! \fn void Spherical_Overpressure_3D()
+  /*! \fn void Spherical_Overdensity_3D()
    *  \brief Initialize the grid with a 3D spherical overdensity for
    * gravitational collapse */
   void Spherical_Overdensity_3D();
+
+  /*! \fn void Spherical_Overdensity_Star_Formation()
+   *  \brief Initialize the grid with a 3D spherical overdensity for
+   * gravitational collapse */
+  void Spherical_Overdensity_Star_Formation();
 
   void Clouds();
 
